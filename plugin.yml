@@ -1,0 +1,11 @@
+name: TerraForma
+main: fat.TerraForma.TerraForma
+version: 0.1
+depend: [Vault]
+description: >
+             A Terrain tool plugin.
+commands:
+    tf:
+        description: Adjust settings for TerraForma
+        usage:
+    
