@@ -2,7 +2,6 @@ package fat.TerraForma;
 
 
 import java.util.List;
-import java.util.logging.Logger;
 import org.bukkit.block.Block;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -11,16 +10,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class TerraFormaPlayer {
-	
-	public static TerraForma plugin;
-	public final Logger log = Logger.getLogger("Minecraft");
 	private Player player;
 	private World world;
 	private int toolHeight = 10;
 	private int toolRadius = 10;
 	private double toolSlope = 4;
 	private int curTool = 5;
-	private boolean isEnabled = true;
+	private boolean isEnabled = false;
 	private boolean useSelectedMatType = true;
 	private Material selectedMatType = Material.SANDSTONE;
 	private byte selectedMatData  = 0;
@@ -35,13 +31,14 @@ public class TerraFormaPlayer {
 		player.sendMessage("TerraForma player created");
 	}
 	
+	/* There's no need for this as far as I can tell -hav
 	//update player in the hashmap
 	public void updatePlayer(Player player) {
 		log.info("Updating player " + player.getName() + "...");
 		this.player = player;
 	}
-	
-	public void onPlayerEvent2(PlayerInteractEvent event) {
+	*/
+	public void playerClickedBlock(PlayerInteractEvent event) {
 		Block clickedBlock = event.getClickedBlock();
 		Material selectedMatTypetemp = clickedBlock.getType();
 		byte selectedMatDatatemp = clickedBlock.getData();
@@ -51,7 +48,7 @@ public class TerraFormaPlayer {
 	}
 	
 	//when an event triggers 
-	public void onPlayerEvent(PlayerInteractEvent event) {
+	public void playerClickedAir(PlayerInteractEvent event) {
 		Block block = player.getTargetBlock(null, 150);
 		Material type = block.getType();
 		byte data = block.getData();
@@ -62,8 +59,6 @@ public class TerraFormaPlayer {
 		this.world = block.getWorld();
 		
 		//ItemStack inHand = player.getItemInHand();
-		//set time to midday when using tool TODO remove later
-		world.setTime(1000);
 		
 		//send coordinates of block event
 		//this.player.sendMessage(ChatColor.YELLOW + "" + xpos + ", " + ypos + ", " + zpos);
@@ -99,9 +94,12 @@ public class TerraFormaPlayer {
 				tTransform.drawHill(xpos, ypos, zpos, type, data);
 				break;
 			case(6): //create a valley
-				tTransform.drawValley(xpos, ypos, zpos, type, data);
+				tTransform.drawValley(xpos, ypos, zpos, data);
+				break;
+			default:
 				break;
 			}
+			
 			
 		}
 		

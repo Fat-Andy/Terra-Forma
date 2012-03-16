@@ -23,21 +23,25 @@ public class TFInteract implements Listener{
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		
 		Player player = event.getPlayer();
+		// probably shouldn't store these if only doing one check -hav
 		ItemStack inHand = player.getItemInHand();
 		Material hand = inHand.getType();
-		if (event.getAction() == Action.RIGHT_CLICK_AIR && hand == Material.WOOD_PICKAXE) {
-			try {
-				TerraFormaPlayer tf = TerraForma.terraFormaPlayers.get(event.getPlayer().getName());
-				tf.onPlayerEvent(event);
-			} catch (Exception e) {
-				this.plugin.addTerraFormaPlayer(event.getPlayer());
-			}
-		}else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && hand == Material.WOOD_PICKAXE) {
-			try {
-				TerraFormaPlayer tf = TerraForma.terraFormaPlayers.get(event.getPlayer().getName());
-				tf.onPlayerEvent2(event);
-			} catch (Exception e) {
-				this.plugin.addTerraFormaPlayer(event.getPlayer());
+		
+		if (hand == Material.WOOD_PICKAXE){
+			if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+	
+				TerraFormaPlayer tfPlayer = TFPlayers.getPlayer(event.getPlayer());
+				if (tfPlayer != null){
+					tfPlayer.playerClickedAir(event);
+				}
+	
+			} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+				
+				TerraFormaPlayer tfPlayer = TFPlayers.getPlayer(event.getPlayer());
+				if (tfPlayer != null){
+					tfPlayer.playerClickedBlock(event);
+				}
+				
 			}
 		}
 	}

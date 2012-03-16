@@ -1,7 +1,7 @@
 name: TerraForma
 main: fat.TerraForma.TerraForma
 version: 0.1
-depend: [Vault]
+softdepend: [Vault]
 description: >
              A Terrain tool plugin.
 commands:
