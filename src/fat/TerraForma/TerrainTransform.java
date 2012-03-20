@@ -12,7 +12,7 @@ public class TerrainTransform {
 	
 	public TerrainTransform(TerraFormaPlayer player){
 		
-		this.player = player;	
+		this.player = player;
 	}
 		
 	//makes a hollow cylinder
@@ -137,9 +137,13 @@ public class TerrainTransform {
 	//makes a plateau only of blocks at the same level within a square 
 	public void drawPlateau(int xpos, int ypos, int zpos, Material type, byte data){
 		
-		for(int i = 1; i <= this.player.getToolHeight(); i++){
-			for (int j = 0; j < this.player.getToolRadius(); j++){
-				for (int k = 0; k < this.player.getToolRadius(); k++){
+		// Don't call getters in loops if you don't have to (ie. unless it's changing) -hav
+		int toolHeight = this.player.getToolHeight();
+		int toolRadius = this.player.getToolRadius();
+		
+		for(int i = 1; i <= toolHeight; i++){
+			for (int j = 0; j < toolRadius; j++){
+				for (int k = 0; k < toolRadius; k++){
 					setBlock(this.player.getWorld().getBlockAt(xpos + j, ypos + i, zpos + k), this.player.getWorld().getBlockAt(xpos + j, ypos, zpos + k).getType(), this.player.getWorld().getBlockAt(xpos + j, ypos, zpos + k).getData());
 				}
 			}
@@ -181,7 +185,7 @@ public class TerrainTransform {
 	}
 	
 	//creates a valley.
-	public void drawValley(int xpos, int ypos, int zpos, Material type, byte data){
+	public void drawValley(int xpos, int ypos, int zpos, byte data){
 		/*
 		 * old valley code
 		 * 
@@ -203,7 +207,7 @@ public class TerrainTransform {
 		int orgRadius = (int) tempRadius;
 		double slope = this.player.getToolSlope();
 		int height = this.player.getToolHeight();
-		type = Material.AIR;
+		Material type = Material.AIR; // hard coded AIR since we are creating valleys -hav
 		for (int y = 0; y <= height; y++) {
 			// based on quadratic curve formula
 			tempRadius = 5 * (Math.sqrt(Math.abs(y - height) / slope));
