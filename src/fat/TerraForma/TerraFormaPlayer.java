@@ -12,25 +12,26 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class TerraFormaPlayer {
 	private Player player;
 	private World world;
+	private int floorHeight = 65;
 	private int toolHeight = 10;
 	private int toolRadius = 10;
-	private double toolSlope = 4;
+	private int toolDepth = 4;
+	private double toolSlope = 2;
 	private int curTool = 5;
-	private boolean isEnabled = false;
-	private boolean useSelectedMatType = true;
+	private boolean isEnabled = true;
+	private boolean userRadMode = false;
+	private boolean useSelectedMatType = false;
 	private Material selectedMatType = Material.SANDSTONE;
 	private byte selectedMatData  = 0;
 	private TerrainTransform tTransform = new TerrainTransform(this);
 	private List<Block> sight;
-	//public ItemStack inHand = player.getItemInHand();
-	//public Material hand = inHand.getType();
-	
+
 	public TerraFormaPlayer(Player player){
 		this.player = player;
-		
+
 		player.sendMessage("TerraForma player created");
 	}
-	
+
 	/* There's no need for this as far as I can tell -hav
 	//update player in the hashmap
 	public void updatePlayer(Player player) {
@@ -38,16 +39,25 @@ public class TerraFormaPlayer {
 		this.player = player;
 	}
 	*/
+	//
+	//when a right click block event triggers 
 	public void playerClickedBlock(PlayerInteractEvent event) {
 		Block clickedBlock = event.getClickedBlock();
 		Material selectedMatTypetemp = clickedBlock.getType();
 		byte selectedMatDatatemp = clickedBlock.getData();
 		this.selectedMatType = selectedMatTypetemp;
 		this.selectedMatData = selectedMatDatatemp;
-		this.player.sendMessage(ChatColor.YELLOW + "New material type: " + this.selectedMatType);
+		this.player.sendMessage(ChatColor.AQUA + "New material type: " + ChatColor.GOLD + this.selectedMatType);
 	}
 	
-	//when an event triggers 
+	//when a left click air event triggers 
+	public void playerLeftClickedAir(PlayerInteractEvent event){
+		Block block = player.getTargetBlock(null, 150);
+		this.floorHeight = block.getY() + 1;
+		player.sendMessage(ChatColor.AQUA + "Floor height set to " + ChatColor.GOLD + this.floorHeight);		
+	}
+
+	//when a right click air event triggers 
 	public void playerClickedAir(PlayerInteractEvent event) {
 		Block block = player.getTargetBlock(null, 150);
 		Material type = block.getType();
@@ -57,12 +67,11 @@ public class TerraFormaPlayer {
 		int zpos = block.getZ();
 		this.sight = player.getLineOfSight(null, 40);
 		this.world = block.getWorld();
-		
+
 		//ItemStack inHand = player.getItemInHand();
-		
-		//send coordinates of block event
-		//this.player.sendMessage(ChatColor.YELLOW + "" + xpos + ", " + ypos + ", " + zpos);
-		
+
+		//this.player.sendMessage(ChatColor.YELLOW + "data: " + data);
+
 		/*TODO add in permissions checking
 		Permission perm = plugin.getPerm();
 				
@@ -94,20 +103,24 @@ public class TerraFormaPlayer {
 				tTransform.drawHill(xpos, ypos, zpos, type, data);
 				break;
 			case(6): //create a valley
-				tTransform.drawValley(xpos, ypos, zpos, data);
+				tTransform.drawValley(xpos, ypos, zpos, type, data);
 				break;
-			default:
+			case(7): //levels terrain
+				tTransform.level(xpos, ypos, zpos, type, data);
 				break;
 			}
 			
-			
 		}
 		
-	}
+	}	
 	
-	//set variables
+	//set variables	
 	public void setToolHeight(int th){
 		this.toolHeight = th;	
+	}
+	
+	public void setToolDepth(int td){
+		this.toolDepth = td;	
 	}
 	
 	public void setToolRadius(int tr){
@@ -121,6 +134,11 @@ public class TerraFormaPlayer {
 	//set current tool
 	public void setCurTool(int tool){
 		this.curTool = tool;
+	}
+	
+	//get floor height
+	public int getFloorHeight(){
+		return this.floorHeight;
 	}
 	
 	//get current tool
@@ -137,6 +155,10 @@ public class TerraFormaPlayer {
 	public int getToolHeight(){
 		return this.toolHeight;
 	}
+	//return toolDepth
+		public int getToolDepth(){
+			return this.toolDepth;
+		}
 	//return toolRadius
 	public int getToolRadius(){
 		return this.toolRadius;
@@ -147,7 +169,7 @@ public class TerraFormaPlayer {
 		return this.toolSlope;
 	}
 	
-	//return toolSlope
+	//return line of sight
 	public List<Block> getSight(){
 		return this.sight;
 	}
@@ -169,22 +191,47 @@ public class TerraFormaPlayer {
 	}
 	
 	public void enableSelectedType(){
-		useSelectedMatType = true;
+		this.useSelectedMatType = true;
 	}
 	
 	public void disableSelectedType(){
-		useSelectedMatType = false;
+		this.useSelectedMatType = false;
+	}
+	
+	public Boolean getUseSelectedMatType(){
+		return useSelectedMatType;
+	}
+	
+	public void enableUserRadMode(){
+		this.userRadMode = true;
+	}
+	
+	public void disableUserRadMode(){
+		this.userRadMode = false;
+	}
+	
+	public Boolean getUserRadMode(){
+		return userRadMode;
 	}
 	
 	//enable terrain tools
 	public void enable(){
-		isEnabled = true;
+		this.isEnabled = true;
 		
 	}
 	//disable terrain tools
 	public void disable(){
-		isEnabled = false;
+		this.isEnabled = false;
 	}
+	public Boolean isEnabled(){
+		return this.isEnabled;
+	}
+	
+	public void sendPlayerMessage(String message){
+		
+		this.player.sendMessage(message);
+	}
+	
 	
 	
 }
