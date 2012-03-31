@@ -152,36 +152,18 @@ public class TerrainTransform {
 			}
 		}		
 	}
-	/*
-	//levels area as user drags mouse. 
-	public void level(int xpos, int ypos, int zpos, Material type, byte data){
-		type = this.player.getWorld().getBlockAt(xpos, ypos, zpos).getType();
-		data = this.player.getWorld().getBlockAt(xpos, ypos, zpos).getData();
-		for(int i = 0; i <= this.player.getToolHeight(); i++){
-			for (int j = 0; j < this.player.getToolRadius(); j++){
-				for (int k = 0; k < this.player.getToolRadius(); k++){
-					setBlock(this.player.getWorld().getBlockAt(xpos + j, ypos - i, zpos + k), type, data);
-				}
-			}
-		}		
-	}
-	*/
-	//creates a hill.
-		public void level(int xpos, int ypos, int zpos, Material type, byte data){
-			/*
-			type = this.player.getWorld().getBlockAt(xpos, ypos, zpos).getType();
-			data = this.player.getWorld().getBlockAt(xpos, ypos, zpos).getData();
-			*/
-			int orgYpos = ypos;
-			for(int y = 0; y < this.player.getToolDepth(); y++){
-				drawSingleCylinder(xpos, orgYpos - y, zpos, type, data);
-			}
-			for(int y = 1; y < (this.player.getToolHeight() + 1); y++){
-				drawSingleCylinder(xpos, orgYpos + y, zpos, Material.AIR, (byte) 0);
-			}
-		}
 	
-	//draws a line of blocks from under the player to 2 blocks under the block they are looking at.
+	//creates a hill.
+	public void level(int xpos, int ypos, int zpos, Material type, byte data){
+		for(int y = 0; y <= (ypos - this.player.getFloorHeight()); y++){
+			drawSingleCylinder(xpos, ypos - y, zpos, type, data);
+		}
+		for(int y = 1; y < (this.player.getToolHeight() + 1); y++){
+			drawSingleCylinder(xpos, ypos + y, zpos, Material.AIR, (byte) 0);
+		}
+	}
+	
+	//draws a line of blocks from the player to 2 blocks under the block they are looking at.
 	public void drawLineToTarget(int xpos, int ypos, int zpos, Material type, byte data){
 		for(int i = 0; i < this.player.getSight().size(); i++){
 			setBlock(this.player.getSight().get(i).getX(), this.player.getSight().get(i).getY() - 2, this.player.getSight().get(i).getZ(), type, data);
@@ -356,6 +338,11 @@ public class TerrainTransform {
 	}
 	
 	public void containsBlocks(int xpos, int ypos, int zpos) {
+		
+		/*TODO
+		 * This method might be more useful if it checked for the surface of blocks connected
+		 * to the clicked block within a boundary shape, instead of iterating through all the blocks. 
+		 */
 		
 		int radius =  this.player.getToolRadius();
 		int f = 1 - radius;

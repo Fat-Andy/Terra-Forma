@@ -14,8 +14,7 @@ public class TerraFormaPlayer {
 	private World world;
 	private int floorHeight = 65;
 	private int toolHeight = 10;
-	private int toolRadius = 10;
-	private int toolDepth = 4;
+	private int toolRadius = 5;
 	private double toolSlope = 2;
 	private int curTool = 5;
 	private boolean isEnabled = true;
@@ -119,10 +118,6 @@ public class TerraFormaPlayer {
 		this.toolHeight = th;	
 	}
 	
-	public void setToolDepth(int td){
-		this.toolDepth = td;	
-	}
-	
 	public void setToolRadius(int tr){
 		this.toolRadius = tr;	
 	}
@@ -155,10 +150,7 @@ public class TerraFormaPlayer {
 	public int getToolHeight(){
 		return this.toolHeight;
 	}
-	//return toolDepth
-		public int getToolDepth(){
-			return this.toolDepth;
-		}
+
 	//return toolRadius
 	public int getToolRadius(){
 		return this.toolRadius;

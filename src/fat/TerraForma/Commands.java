@@ -36,7 +36,6 @@ public class Commands implements CommandExecutor{
 						sender.sendMessage(ChatColor.YELLOW + "/tf valley - " + ChatColor.AQUA + "Sets tool to Valley");
 						sender.sendMessage(ChatColor.YELLOW + "/tf level - " + ChatColor.AQUA + "Sets tool to Level");
 						sender.sendMessage(ChatColor.YELLOW + "/tf height <number> - " + ChatColor.AQUA + "Sets tool Height");
-						sender.sendMessage(ChatColor.YELLOW + "/tf depth <number> - " + ChatColor.AQUA + "Sets tool Depth");
 						sender.sendMessage(ChatColor.YELLOW + "/tf radius <number> - " + ChatColor.AQUA + "Sets tool Radius");
 						sender.sendMessage(ChatColor.YELLOW + "/tf slope <number> - " + ChatColor.AQUA + "Sets tool Slope");
 						//TODO add in undo method
@@ -55,8 +54,7 @@ public class Commands implements CommandExecutor{
 								terraFormaPlayer.getUseSelectedMatType() + ChatColor.AQUA +  " Rad Mode: " + ChatColor.GOLD +
 								terraFormaPlayer.getUserRadMode() + ChatColor.AQUA + "" + " Current tool set to " +
 								ChatColor.GOLD + terraFormaPlayer.getCurTool() + ChatColor.AQUA +  " Height: " + ChatColor.GOLD +
-								terraFormaPlayer.getFloorHeight() + ChatColor.AQUA +  " Depth: " + ChatColor.GOLD +
-								terraFormaPlayer.getToolDepth() + ChatColor.AQUA +  " Slope: " + ChatColor.GOLD +
+								terraFormaPlayer.getToolHeight() + ChatColor.AQUA +  " Slope: " + ChatColor.GOLD +
 								terraFormaPlayer.getToolSlope() + ChatColor.AQUA +  " Floor Height: " + ChatColor.GOLD +
 								terraFormaPlayer.getFloorHeight() + ChatColor.AQUA +  " Radius: " + ChatColor.GOLD +
 								terraFormaPlayer.getToolRadius());
@@ -90,13 +88,13 @@ public class Commands implements CommandExecutor{
 						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to Line to Target");
 					} else if (args[0].equalsIgnoreCase("Hill")) {
 						terraFormaPlayer.setCurTool(5);
-						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to " + ChatColor.GOLD + "Hill. " + ChatColor.AQUA +"Height: " + ChatColor.GOLD +  terraFormaPlayer.getFloorHeight() + ChatColor.AQUA +  " Slope: " + ChatColor.GOLD +  terraFormaPlayer.getToolSlope());
+						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to " + ChatColor.GOLD + "Hill. " + ChatColor.AQUA +"Height: " + ChatColor.GOLD +  terraFormaPlayer.getToolHeight() + ChatColor.AQUA +  " Slope: " + ChatColor.GOLD +  terraFormaPlayer.getToolSlope());
 					} else if (args[0].equalsIgnoreCase("Valley")) {
 						terraFormaPlayer.setCurTool(6);
 						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to Valley");
 					} else if (args[0].equalsIgnoreCase("Level")) {
 						terraFormaPlayer.setCurTool(7);
-						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to " + ChatColor.GOLD + "Level. " + ChatColor.AQUA +  "Height: " + ChatColor.GOLD +  terraFormaPlayer.getFloorHeight() + ChatColor.AQUA +  " Depth: " + ChatColor.GOLD +  terraFormaPlayer.getToolDepth());
+						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to " + ChatColor.GOLD + "Level. " + ChatColor.AQUA +  "Clear Height: " + ChatColor.GOLD +  terraFormaPlayer.getToolHeight() + ChatColor.AQUA +  " Floor Height: " + ChatColor.GOLD +  terraFormaPlayer.getFloorHeight());
 					}
 
 				}
@@ -124,17 +122,6 @@ public class Commands implements CommandExecutor{
 
 					terraFormaPlayer.setToolRadius(value.intValue());
 					sender.sendMessage(ChatColor.AQUA + "" + "Tool radius set to " + ChatColor.GOLD + value);
-				} else if (args.length > 1 && (args[0].equalsIgnoreCase("Depth") || args[0].equalsIgnoreCase("d"))) {
-
-					Double value;
-					try {
-						value = Double.parseDouble(args[1]);
-					} catch (NumberFormatException e) {
-						value = 0.0;
-					}
-
-					terraFormaPlayer.setToolDepth(value.intValue());
-					sender.sendMessage(ChatColor.AQUA + "" + "Tool depth set to " + value);
 				} else if (args.length > 1 && args[0].equalsIgnoreCase("Slope")) {
 
 					Double value;
