@@ -153,7 +153,8 @@ public class TerrainTransform {
 		}		
 	}
 	
-	//creates a hill.
+	//levels terrain from clicked block to floor height
+	//clears blocks above from clicked block to height
 	public void level(int xpos, int ypos, int zpos, Material type, byte data){
 		for(int y = 0; y <= (ypos - this.player.getFloorHeight()); y++){
 			drawSingleCylinder(xpos, ypos - y, zpos, type, data);
@@ -170,7 +171,8 @@ public class TerrainTransform {
 		}
 	}
 	
-	//Deprecated method, creates a hill.
+	//Deprecated method, creates a hill
+	//keep this for a while, just in case
 	public void drawHillDeprecated(int xpos, int ypos, int zpos, Material type, byte data){
 		//TODO add user options for randomized terrain
 		//Random randNumber = new Random();
@@ -200,14 +202,18 @@ public class TerrainTransform {
 	//creates a hill using containsBlocks method
 	//will not override existing blocks underneath.
 	public void drawHill(int xpos, int ypos, int zpos, Material type, byte data){
-		//TODO add user options for randomized terrain?
-		//Random randNumber = new Random();
+		/* TODO add user options for randomized terrain?
+		/* Random randNumber = new Random();
+		 * 
+		 * TODO error checking: max height to draw = 256
+		 */
 		double tempRadius = this.player.getToolRadius();
 		int orgRadius = (int) tempRadius;
 		double slope = this.player.getToolSlope();
 		double height = this.player.getToolHeight();
 		double floor = this.player.getFloorHeight();
 		Boolean userRadMode = this.player.getUserRadMode();
+		
 		for(double y = floor; y <= (ypos+1) ; y++){
 			if(y > (height + floor)){
 				break;
@@ -221,15 +227,6 @@ public class TerrainTransform {
 			if (tempRadius <= 0){
 				break;
 			}else if (tempRadius > orgRadius && userRadMode == true){
-				
-				/* 
-				 * TODO
-				 * How should user defined radius be handled inside the hill method?
-				 * Should it be left up to the tempRadius algorithm and ignored?
-				 * Or should tempRadius be reset to original if tempRadius is larger than the original radius?
-				 * If this is not the case, this check is not needed.
-				 * 
-				 */
 				
 				this.player.setToolRadius(orgRadius);
 				
@@ -246,56 +243,86 @@ public class TerrainTransform {
 					setBlock(it.next(), type, data);
 				}
 			}
-			}
+		}
 		this.blockList.clear();
 		this.player.setToolRadius(orgRadius);		
 	}
 	
 	//creates a valley.
 	public void drawValley(int xpos, int ypos, int zpos, Material type, byte data){
-		/*
-		 * old valley code
-		 * 
-		Random randNumber = new Random();
-		int tempRadius = this.player.getToolRadius();
-		int orgRadius = tempRadius;
-		type = Material.AIR;
-		for(int i = 0; i <= this.player.getToolHeight() ; i++){
-			this.player.setToolRadius(tempRadius);
-			tempRadius -= randNumber.nextInt(3);
-			if (tempRadius == 0){ break; }
-			drawSingleCylinder(xpos, ypos - i, zpos, type, data); //what is data for air??
-		}
-		this.player.setToolRadius(orgRadius);
-		*/
-		//TODO add user options for randomized terrain
-		// Random randNumber = new Random();
+		
+		//TODO add user options for randomized terrain?
+		//Random randNumber = new Random();
 		double tempRadius = this.player.getToolRadius();
 		int orgRadius = (int) tempRadius;
 		double slope = this.player.getToolSlope();
-		int height = this.player.getToolHeight();
-		type = Material.AIR;
-		for (int y = 0; y <= height; y++) {
-			// based on quadratic curve formula
-			tempRadius = 5 * (Math.sqrt(Math.abs(y - height) / slope));
-			// based on some random math i came up with
-			// tempRadius = Math.sqrt(y / slope) - y + height;
-			// TODO add user options for randomized terrain
-			// tempRadius = Math.sqrt(y / slope) - y + height- randNumber.nextInt(2) +
-			// randNumber.nextInt(2);
-			this.player.setToolRadius((int) tempRadius);
-			if (tempRadius <= 0) {
+		double height = this.player.getToolHeight();
+		double floor = this.player.getFloorHeight();
+		Boolean userRadMode = this.player.getUserRadMode();
+		double temp = 0;
+		
+		/*
+		 * New Pretty sure this is correct...
+		 * TODO MOAR Error testing. Also, the valley's don't look quite right yet.
+		 * TODO Need to work on Upside-down Hill "/tf uhill" command
+		 */
+		for(double y = ypos; y >= (ypos - height + 1); y--){
+			
+			if(y > (floor + height)){
+				temp = y - floor - height;
+				//y = floor + height;
+				this.player.sendPlayerMessage("y " + y + "floor + height " + temp);
+			}else{
+				temp = 0;
+			}
+ 
+			//the bread & butter of the method, the hill shape.
+			tempRadius = slope * Math.acos((-2 * (y - floor - (height / 2 + temp)) / height));
+			this.player.sendPlayerMessage("rad" + tempRadius);		
+			this.player.setToolRadius((int)tempRadius);
+			if (tempRadius <= 0){
 				break;
-			} // if radius is < 0 don't draw anything else.
-			else if (tempRadius > orgRadius) {
+			}else if (tempRadius > orgRadius && userRadMode == true){
 				this.player.setToolRadius(orgRadius);
-				drawSingleCylinder(xpos, ypos - y, zpos, type, data);
-			} else {
-				drawSingleCylinder(xpos, ypos - y, zpos, type, data);
+				drawSingleCylinder(xpos, (int) y, zpos, type, data);
+						
+			}
+			else {
+				drawSingleCylinder(xpos, (int) y, zpos, type, data);
 			}
 		}
-		this.player.setToolRadius(orgRadius);
 		
+		/*
+		 * Old Working... Kinda, need to figure out how to raise the curve up to only draw
+		 * as low as (y - height)
+		 *
+		for(double y = ypos; y >= floor; y--){
+			
+			if(y > (floor + height)){
+				y = floor + height;
+				this.player.sendPlayerMessage("y " + y + "floor + height " + temp);
+			}
+ 
+			//the bread & butter of the method, the hill shape.
+			tempRadius = slope * Math.acos((-2 * (y - floor - (height / 2)) / height));
+			this.player.sendPlayerMessage("rad" + tempRadius);		
+			this.player.setToolRadius((int)tempRadius);
+			if (tempRadius > orgRadius && userRadMode == true){
+				this.player.setToolRadius(orgRadius);
+				drawSingleCylinder(xpos, (int) y, zpos, type, data);
+						
+			}
+			else {
+				drawSingleCylinder(xpos, (int) y, zpos, type, data);
+			}
+		}
+		*/
+		
+		this.player.setToolRadius(orgRadius);
+	}
+	
+	public void placePlatform(Block block, Material type, byte data){
+		setBlock(block, type, data);
 	}
 	
 	//draws a line between two points
@@ -312,6 +339,7 @@ public class TerrainTransform {
 			
 		}
 	}
+	
 
 	//sets blocks
 	private void setBlock(Block block, Material type, byte data){

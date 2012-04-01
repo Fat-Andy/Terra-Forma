@@ -4,6 +4,7 @@ package fat.TerraForma;
 import java.util.List;
 import org.bukkit.block.Block;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -66,7 +67,7 @@ public class TerraFormaPlayer {
 		int zpos = block.getZ();
 		this.sight = player.getLineOfSight(null, 40);
 		this.world = block.getWorld();
-
+		
 		//ItemStack inHand = player.getItemInHand();
 
 		//this.player.sendMessage(ChatColor.YELLOW + "data: " + data);
@@ -102,9 +103,12 @@ public class TerraFormaPlayer {
 				tTransform.drawHill(xpos, ypos, zpos, type, data);
 				break;
 			case(6): //create a valley
+				tTransform.drawValley(xpos, ypos, zpos, Material.AIR, (byte) 0);
+				break;
+			case(7): //create upside down hill
 				tTransform.drawValley(xpos, ypos, zpos, type, data);
 				break;
-			case(7): //levels terrain
+			case(8): //levels terrain
 				tTransform.level(xpos, ypos, zpos, type, data);
 				break;
 			}
@@ -112,6 +116,12 @@ public class TerraFormaPlayer {
 		}
 		
 	}	
+	
+	public void platform(){
+		Location loc = this.player.getLocation();
+		tTransform.placePlatform(loc.getBlock(), this.selectedMatType, this.selectedMatData);
+		
+	}
 	
 	//set variables	
 	public void setToolHeight(int th){
@@ -129,6 +139,11 @@ public class TerraFormaPlayer {
 	//set current tool
 	public void setCurTool(int tool){
 		this.curTool = tool;
+	}
+	
+	//set floor height
+		public void setFloorHeight(int fh){
+			this.floorHeight = fh;
 	}
 	
 	//get floor height

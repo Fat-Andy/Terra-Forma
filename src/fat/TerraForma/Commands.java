@@ -38,6 +38,7 @@ public class Commands implements CommandExecutor{
 						sender.sendMessage(ChatColor.YELLOW + "/tf height <number> - " + ChatColor.AQUA + "Sets tool Height");
 						sender.sendMessage(ChatColor.YELLOW + "/tf radius <number> - " + ChatColor.AQUA + "Sets tool Radius");
 						sender.sendMessage(ChatColor.YELLOW + "/tf slope <number> - " + ChatColor.AQUA + "Sets tool Slope");
+						sender.sendMessage(ChatColor.YELLOW + "/tf floor <number> - " + ChatColor.AQUA + "Sets Floor Height");
 						//TODO add in undo method
 						sender.sendMessage(ChatColor.YELLOW + "/tf undo - " + ChatColor.AQUA + "--Available Soon--");
 				}else if (args.length == 1) {
@@ -74,6 +75,9 @@ public class Commands implements CommandExecutor{
 							terraFormaPlayer.disableUserRadMode();
 							sender.sendMessage(ChatColor.AQUA + "Equation defined, radius will not be limited");
 						}	
+					} else if (args[0].equalsIgnoreCase("platform")) {
+						terraFormaPlayer.platform();
+						sender.sendMessage(ChatColor.AQUA + "" + "Platform placed");
 					} else if (args[0].equalsIgnoreCase("HollowCyl")) {
 						terraFormaPlayer.setCurTool(1);
 						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to Hollow Cylinder");
@@ -88,13 +92,28 @@ public class Commands implements CommandExecutor{
 						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to Line to Target");
 					} else if (args[0].equalsIgnoreCase("Hill")) {
 						terraFormaPlayer.setCurTool(5);
-						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to " + ChatColor.GOLD + "Hill. " + ChatColor.AQUA +"Height: " + ChatColor.GOLD +  terraFormaPlayer.getToolHeight() + ChatColor.AQUA +  " Slope: " + ChatColor.GOLD +  terraFormaPlayer.getToolSlope());
+						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to " + ChatColor.GOLD + "Hill. "
+						+ ChatColor.AQUA + "MaxHeight: " + ChatColor.GOLD +  terraFormaPlayer.getToolHeight()
+						+ ChatColor.AQUA + " Floor: " + ChatColor.GOLD +  terraFormaPlayer.getFloorHeight()
+						+ ChatColor.AQUA + " Slope: " + ChatColor.GOLD +  terraFormaPlayer.getToolSlope());
 					} else if (args[0].equalsIgnoreCase("Valley")) {
 						terraFormaPlayer.setCurTool(6);
-						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to Valley");
-					} else if (args[0].equalsIgnoreCase("Level")) {
+						sender.sendMessage(ChatColor.DARK_AQUA + "" + "Current tool set to " + ChatColor.GOLD + "Valley.");
+						sender.sendMessage(ChatColor.AQUA + "   MaxDepth: " + ChatColor.GOLD +  terraFormaPlayer.getToolHeight());
+						sender.sendMessage(ChatColor.AQUA + "   Floor: " + ChatColor.GOLD +  terraFormaPlayer.getFloorHeight());
+						sender.sendMessage(ChatColor.AQUA + "   Slope: " + ChatColor.GOLD +  terraFormaPlayer.getToolSlope());	
+					} else if (args[0].equalsIgnoreCase("UHill")) {
 						terraFormaPlayer.setCurTool(7);
-						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to " + ChatColor.GOLD + "Level. " + ChatColor.AQUA +  "Clear Height: " + ChatColor.GOLD +  terraFormaPlayer.getToolHeight() + ChatColor.AQUA +  " Floor Height: " + ChatColor.GOLD +  terraFormaPlayer.getFloorHeight());
+						sender.sendMessage(ChatColor.DARK_AQUA + "" + "Current tool set to " + ChatColor.GOLD + "Upside-down Hill.");
+						sender.sendMessage(ChatColor.AQUA + "   MaxDepth: " + ChatColor.GOLD +  terraFormaPlayer.getToolHeight());
+						sender.sendMessage(ChatColor.AQUA + "   Floor: " + ChatColor.GOLD +  terraFormaPlayer.getFloorHeight());
+						sender.sendMessage(ChatColor.AQUA + "   Slope: " + ChatColor.GOLD +  terraFormaPlayer.getToolSlope());	
+					} else if (args[0].equalsIgnoreCase("Level")) {
+						terraFormaPlayer.setCurTool(8);
+						sender.sendMessage(ChatColor.AQUA + "" + "Current tool set to " + ChatColor.GOLD + "Level. "
+						+ ChatColor.AQUA + "Clearance: " + ChatColor.GOLD +  terraFormaPlayer.getToolHeight()
+						+ ChatColor.AQUA + " Floor: " + ChatColor.GOLD +  terraFormaPlayer.getFloorHeight()
+						+ ChatColor.AQUA + " Radius: " + ChatColor.GOLD +  terraFormaPlayer.getToolRadius());
 					}
 
 				}
@@ -132,7 +151,18 @@ public class Commands implements CommandExecutor{
 					}
 
 					terraFormaPlayer.setToolSlope(value);
-					sender.sendMessage(ChatColor.AQUA + "" + "Tool slope set to " + value);
+					sender.sendMessage(ChatColor.AQUA + "" + "Tool slope set to " + ChatColor.GOLD + value);
+				} else if (args.length > 1 && args[0].equalsIgnoreCase("Floor")) {
+
+					Double value;
+					try {
+						value = Double.parseDouble(args[1]);
+					} catch (NumberFormatException e) {
+						value = 0.0;
+					}
+
+					terraFormaPlayer.setFloorHeight(value.intValue());
+					sender.sendMessage(ChatColor.AQUA + "" + "FloorHeight set to " + ChatColor.GOLD + value);
 				} else {
 					sender.sendMessage(ChatColor.RED + "args.length" + args.length + " " + command + " args[0] " + args[0] + " args[1] " + args[1]);
 					return false;
